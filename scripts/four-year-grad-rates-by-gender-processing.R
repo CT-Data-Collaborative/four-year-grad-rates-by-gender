@@ -30,10 +30,14 @@ four_yr_gr_grad_dist <- data.frame(stringsAsFactors = F)
 four_yr_gr_grad_dist_noTrend <- grep("trend", all_grad_dist_csvs, value=T, invert=T)
 for (i in 1:length(four_yr_gr_grad_dist_noTrend)) {
   current_file <- read.csv(paste0(path_to_raw_data, "/", four_yr_gr_grad_dist_noTrend[i]), stringsAsFactors=F, header=F )
+  #remove any row with all blanks
+  current_file[current_file == ""] <- NA
+  current_file <- current_file[rowSums(is.na(current_file)) != ncol(current_file),]
   #remove first 3 rows
   current_file <- current_file[-c(1:3),]
   colnames(current_file) = current_file[1, ]
   current_file = current_file[-1, ] 
+  current_file$`District Code` <- NULL
   #Relabel columns
   names(current_file) <- gsub("Still Enrolled", "Still Enrolled After Four Years", names(current_file) )
   names(current_file) <- gsub("Graduation", "Four Year Graduation", names(current_file) )
@@ -49,10 +53,14 @@ four_yr_gr_nongrad_dist <- data.frame(stringsAsFactors = F)
 four_yr_gr_nongrad_dist_noTrend <- grep("trend", all_nongrad_dist_csvs, value=T, invert=T)
 for (i in 1:length(four_yr_gr_nongrad_dist_noTrend)) {
   current_file <- read.csv(paste0(path_to_raw_data, "/", four_yr_gr_nongrad_dist_noTrend[i]), stringsAsFactors=F, header=F )
+  #remove any row with all blanks
+  current_file[current_file == ""] <- NA
+  current_file <- current_file[rowSums(is.na(current_file)) != ncol(current_file),]
   #remove first 3 rows
   current_file <- current_file[-c(1:3),]
   colnames(current_file) = current_file[1, ]
   current_file = current_file[-1, ] 
+  current_file$`District Code` <- NULL
   #Relabel columns
   names(current_file) <- gsub("Still Enrolled", "Still Enrolled After Four Years", names(current_file) )
   names(current_file) <- gsub("Graduation", "Four Year Graduation", names(current_file) )
@@ -68,6 +76,9 @@ four_yr_gr_grad_state <- data.frame(stringsAsFactors = F)
 four_yr_gr_grad_state_noTrend <- grep("trend", all_grad_state_csvs, value=T, invert=T)
 for (i in 1:length(four_yr_gr_grad_state_noTrend)) {
   current_file <- read.csv(paste0(path_to_raw_data, "/", four_yr_gr_grad_state_noTrend[i]), stringsAsFactors=F, header=F )
+  #remove any row with all blanks
+  current_file[current_file == ""] <- NA
+  current_file <- current_file[rowSums(is.na(current_file)) != ncol(current_file),]  
   current_file <- current_file[-c(1:3),]
   colnames(current_file) = current_file[1, ]
   current_file = current_file[-1, ] 
@@ -87,6 +98,9 @@ four_yr_gr_nongrad_state <- data.frame(stringsAsFactors = F)
 four_yr_gr_nongrad_state_noTrend <- grep("trend", all_nongrad_state_csvs, value=T, invert=T)
 for (i in 1:length(four_yr_gr_nongrad_state_noTrend)) {
   current_file <- read.csv(paste0(path_to_raw_data, "/", four_yr_gr_nongrad_state_noTrend[i]), stringsAsFactors=F, header=F )
+  #remove any row with all blanks
+  current_file[current_file == ""] <- NA
+  current_file <- current_file[rowSums(is.na(current_file)) != ncol(current_file),]
   current_file <- current_file[-c(1:3),]
   colnames(current_file) = current_file[1, ]
   current_file = current_file[-1, ] 
@@ -135,7 +149,8 @@ years <- c("2010-2011",
            "2011-2012",
            "2012-2013",
            "2013-2014",
-           "2014-2015")
+           "2014-2015", 
+           "2015-2016")
 
 backfill_years <- expand.grid(
   `FixedDistrict` = unique(districts$`FixedDistrict`),
@@ -215,7 +230,7 @@ test2<-test[duplicated(test), ]
 #Write CSV
 write.table(
   complete_four_yr_gr_long,
-  file.path(path_to_top_level, "data", "four_year_grad_rate_by_gender_2011-2015.csv"),
+  file.path(path_to_top_level, "data", "four_year_grad_rate_by_gender_2011-2016.csv"),
   sep = ",",
   row.names = F
 )
