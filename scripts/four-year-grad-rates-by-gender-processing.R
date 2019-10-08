@@ -1,5 +1,6 @@
 library(dplyr)
 library(datapkg)
+library(tidyr)
 
 ##################################################################
 #
@@ -133,6 +134,12 @@ four_yr_gr_nongrad <- rbind(four_yr_gr_nongrad_dist, four_yr_gr_nongrad_state)
 #merge grad and nongrad
 four_yr_gr <- merge(four_yr_gr_grad, four_yr_gr_nongrad, by = c("District", "Gender", "Total Cohort Count", "Year"))
 
+# In 2018 some school districts were renamed. Change values back to 2017 values to stay consistent
+four_yr_gr$District[four_yr_gr$District == "The Woodstock Academy District"] <- "Woodstock Academy District"
+four_yr_gr$District[four_yr_gr$District == "Achievement First Hartford Academy District"] <- "Achievement First Hartford Academy Inc. District"
+four_yr_gr$District[four_yr_gr$District == "Achievement First Bridgeport Academy District"] <- "Bridgeport Achievement First District"
+four_yr_gr$District[four_yr_gr$District == "Capital Preparatory Harbor School District"] <- "Capital Preparatory Harbor School Inc. District"
+
 #backfill Districts
 district_dp_URL <- 'https://raw.githubusercontent.com/CT-Data-Collaborative/ct-school-district-list/master/datapackage.json'
 district_dp <- datapkg_read(path = district_dp_URL)
@@ -216,7 +223,7 @@ test2<-test[duplicated(test), ]
 #Write CSV
 write.table(
   complete_four_yr_gr_long,
-  file.path(path_to_top_level, "data", "four_year_grad_rate_by_gender_2011-2017.csv"),
+  file.path(path_to_top_level, "data", "four_year_grad_rate_by_gender_2011-2018.csv"),
   sep = ",",
   row.names = F
 )
